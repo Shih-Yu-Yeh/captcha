@@ -17,16 +17,13 @@ if image is None:
     print(f"Failed to read image from {captcha_url}")
 else:
     # 進行閾值處理，將圖像轉換為二進制圖像
-    _, binary_image_otsu = cv2.threshold(
-        image, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    _, binary_image_otsu = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
 
     # 尋找輪廓
-    contours, hierarchy = cv2.findContours(
-        binary_image_otsu, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(binary_image_otsu, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
     # 繪製輪廓
-    image_with_contours = cv2.drawContours(
-        image.copy(), contours, -1, (0, 0, 255), 3)
+    image_with_contours = cv2.drawContours(image.copy(), contours, -1, (0, 0, 255), 3)
 
     # 打印轮廓的数量
     print(f"Found {len(contours)} contours")
@@ -61,8 +58,8 @@ else:
 
     # 顯示原始圖像和處理後的圖像
    # cv2.imshow("Original image", image)
-    # cv2.imshow("Binary image with Otsu's method", binary_image_otsu)
-    # cv2.imshow("Image with contours", image_with_contours)
+    #cv2.imshow("Binary image with Otsu's method", binary_image_otsu)
+    #cv2.imshow("Image with contours", image_with_contours)
 
     # 创建一个字符示例文件名与字符的映射字典
     char_mapping = {
@@ -87,12 +84,10 @@ else:
         # 以下是一个示例使用模板匹配的方法，你可以根据需要进行修改
         for template_file, char_label in char_mapping.items():
             template = cv2.imread(template_file, cv2.IMREAD_GRAYSCALE)
-
-            if template is not None and template.shape[0] <= character_image.shape[0] and template.shape[1] <= character_image.shape[1]:
-                corr = cv2.matchTemplate(
-                    character_image, template, cv2.TM_CCORR_NORMED)
+            if template is not None:
+                corr = cv2.matchTemplate(character_image, template, cv2.TM_CCORR_NORMED)
                 _, confidence, _, _ = cv2.minMaxLoc(corr)
-                if confidence > 0.86:  # 根据实际情况调整阈值
+                if confidence > 0.87:  # 根据实际情况调整阈值
                     recognized_char = char_label
                     break
 
